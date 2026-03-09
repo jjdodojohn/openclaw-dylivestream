@@ -94,24 +94,64 @@ node src/watcher.js https://live.douyin.com/<room-id>
 - Inspect `PROJECT_ROOT/data/pending-comments.json` when testing with a fresh live comment.
 - If the watcher is running but the queue stays unchanged, treat it as unhealthy even if the process is still alive.
 
-### 7. Process pending comments
+### 7. Process pending comments (Cron Job 方式)
 
-- Start a cron job.
-- Read `pending-comments.json` every 10 seconds.
-- Process only records where `isReply === false` and `type === "comment"`.
-- Keep replies short enough for Douyin. Prefer <= 30 characters.
-- Read `PROJECT_ROOT/skills/douyin-live-fullflow/references/reply-style.md` before generating replies that should match the host's live persona.
-- Prefer `PROJECT_ROOT/src/send-comment.sh` when you already have the correct `targetId`.
-- Use:
+推荐使用 OpenClaw cron job 实现定时自动回复，频率为每 10 秒。
 
-```bash
-cd PROJECT_ROOT
-bash src/send-comment.sh -t <targetId> -m "回复内容"
+#### 7.1 启动 cron job
+
+使用 OpenClaw 的 `cron` 工具添加定时任务：
+
+```javascript
+// cron action: add
+{
+  "name": "AI Auto Reply",
+  "schedule": { "kind": "every", "everyMs": 10000 },  // 每10秒
+  "payload": {
+    "kind": "agentTurn",
+    "message": "检查pending-comments.json并自动回复",
+    "model": "minimax-portal/MiniMax-M2.5",
+    "thinking": "off"
+  },
+  "sessionTarget": "isolated",
+  "delivery": { "mode": "none" }
+}
 ```
 
-- Fall back to browser snapshot plus browser actions only when the script is failing or being debugged.
-- After each handled record, update only that record's `isReply` field to `true`.
-- Do not truncate the whole queue file; the watcher may have appended newer items.
+#### 7.2 Cron job 执行流程
+
+每次触发时：
+1. 读取 `pending-comments.json`
+2. 筛选 `isReply === false` 且 `type === "comment"` 的记录
+3. AI 生成回复（简短、机智、幽默，30字以内）
+4. 调用 `bash src/send-comment.sh -t <targetId> -m "<回复内容>"`
+5. 成功后更新 `isReply = true`
+
+#### 7.3 备选：脚本方式
+
+也可以使用脚本 + cron job：
+
+```bash
+# 创建 AI 回复检查脚本
+bash ai-reply-check.sh
+```
+
+#### 7.4 回复要求
+
+- 保持回复简短，抖音限制约30字
+- 风格：机智、幽默、热情、口语化
+- 只回复有价值的评论，忽略广告/无意义内容
+- 优先使用 `src/send-comment.sh` 发送回复
+
+#### 7.5 停止 cron job
+
+```bash
+# 查看任务列表
+cron action: list
+
+# 删除任务
+cron action: remove --jobId <任务ID>
+```
 
 ### 8. Recover when polling stalls
 

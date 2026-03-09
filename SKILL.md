@@ -3,9 +3,6 @@ name: douyin-live-auto-reply
 description: 基于 OpenClaw 的抖音直播项目安装、初始化与自动配置技能入口。用于首次安装时自动下载 GitHub 项目、确认 `PROJECT_ROOT`、检查 `src/config.js`、准备 Browser Gateway、启动 watcher、并使用 `src/send-comment.sh` 发送回复；当任务涉及安装、初始化、自动配置、启动直播流程或接管当前工作区时使用。
 ---
 
-# Douyin Live Install And Auto Config
-
-这个 skill 的目标不是介绍仓库，而是指导另一个 Codex 在首次安装或迁移到新目录后，基于 OpenClaw 把项目配置到可运行状态。
 
 ## 初始化目标
 
