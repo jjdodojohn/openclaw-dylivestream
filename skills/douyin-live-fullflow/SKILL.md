@@ -96,7 +96,8 @@ node src/watcher.js https://live.douyin.com/<room-id>
 
 ### 7. Process pending comments
 
-- Read `pending-comments.json`.
+- Start a cron job.
+- Read `pending-comments.json` every 10 seconds.
 - Process only records where `isReply === false` and `type === "comment"`.
 - Keep replies short enough for Douyin. Prefer <= 30 characters.
 - Read `PROJECT_ROOT/skills/douyin-live-fullflow/references/reply-style.md` before generating replies that should match the host's live persona.
