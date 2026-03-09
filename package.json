@@ -1,0 +1,21 @@
+{
+    "name": "douyin-live-auto-reply",
+    "version": "1.0.0",
+    "description": "抖音直播评论回复",
+    "main": "src/watcher.js",
+    "type": "module",
+    "scripts": {
+        "start": "node src/watcher.js",
+        "watch": "node src/watcher.js",
+        "test": "node tests/test.js"
+    },
+    "keywords": [
+        "douyin",
+        "live",
+        "watcher",
+        "pending-comments",
+        "automation"
+    ],
+    "author": "百万",
+    "license": "MIT"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Douyin Live Fullflow"
+  short_description: "Run Douyin live end-to-end in OpenClaw."
+  default_prompt: "Use $douyin-live-fullflow to run the full Douyin live workflow in this workspace."
